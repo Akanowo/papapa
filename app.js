@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const homeRouter = require('./routes/home.route');
 
-const PORT = 8080 || process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
