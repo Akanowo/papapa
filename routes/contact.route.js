@@ -29,6 +29,9 @@ const routes = () => {
       // Validate captcha response
       if(captchaResponse && captchaResponse.data.success === true) {
 
+        console.log(process.env.RECIEPIENT_EMAIL);
+        console.log(process.env.RECIEPIENT_PWD);
+
         const transport = nodemailer.createTransport({
           service: 'gmail',
           auth: {
