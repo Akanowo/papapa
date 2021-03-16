@@ -7,7 +7,6 @@ jQuery(document).ready(function ($) {
 	const links = document.getElementsByClassName('nav-item');
 
 	for (let link of links) {
-		console.log(link.textContent);
 		if (window.location.href.includes(link.textContent.toLowerCase())) {
 			link.classList.add('active');
 		}
@@ -37,6 +36,8 @@ jQuery(document).ready(function ($) {
 		// Submit form
 		$('#contactForm').on('submit', async (e) => {
 			e.preventDefault();
+			$('#submitBtn').attr('disabled', true);
+			$('#submitBtn').text('Sending...');
 			grecaptcha.ready(function () {
 				grecaptcha.execute('6Le2XH8aAAAAADPsjQLrGDK-ELL80aZpJ-NybgrS', { action: 'submit' }).then(async function (token) {
 					// Post data to backend
@@ -47,13 +48,17 @@ jQuery(document).ready(function ($) {
 						token
 					});
 
-
-					console.log(result.data);
-
 					if (result.data.status === 'failed') {
+						$('#submitBtn').attr('disabled', false);
+						$('#submitBtn').text('Send');
 						alert(result.data.error);
 					} else {
-						alert(result.data.message ? result.data.message : result.data.error );
+						$('#submitBtn').attr('disabled', false);
+						$('#submitBtn').text('Send');
+						$('#message').val(null);
+						$('#name').val(null);
+						$('#email').val(null);
+						alert(result.data.message ? result.data.message : result.data.error || 'An error occured' );
 					}
 				});
 			});
@@ -82,7 +87,6 @@ jQuery(document).ready(function ($) {
 	);
 
 	// Slick slider
-	console.log(location.pathname)
 	if (window.location.pathname === '/home' || window.location.pathname === '/home/') {
 		$('.center').slick({
 			centerMode: true,

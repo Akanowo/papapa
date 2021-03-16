@@ -8,7 +8,6 @@ const routes = () => {
     .get((req, res) => {
       return res.render('contact');
     }).post( async (req, res) => {
-      console.log(req.body);
       if(!req.body.name || !req.body.email || !req.body.message || !req.body.token) {
         return res.status(400).json({
           status: 'failed',
@@ -26,7 +25,6 @@ const routes = () => {
       });
 
       // Log captcha response
-      console.log(captchaResponse.data);
 
       // Validate captcha response
       if(captchaResponse && captchaResponse.data.success === true) {

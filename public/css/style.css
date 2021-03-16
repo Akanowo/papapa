@@ -1862,6 +1862,10 @@ padding-top: 3px;
 		margin-top: 40px;
 	}
 
+	#map-container {
+		margin-top: 4em;
+	}
+
 }
 
 @media (max-width: 322px) {
