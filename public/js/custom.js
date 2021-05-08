@@ -1,6 +1,73 @@
 /*global jQuery:false */
 jQuery(document).ready(function ($) {
 	"use strict";
+	const device = new MobileDetect(window.navigator.userAgent);
+	let jobLinkIsOpen = false;
+	function openImgModal() {
+		if(device.os() === 'iOS' || device.os('AndroidOS')) {
+			const hireImg = document.getElementById('hire_img');
+			hireImg.onclick = (e) => {
+				console.log('hello');
+				$('#hireImgModal').modal('show');
+			};
+		}
+	}
+
+	const handleJobLinkClick = () => {
+		jobLinkIsOpen = !jobLinkIsOpen;
+		const fullJobDetails = $('#fullJobDetails');
+		const btn = $('#jobLinkBtn');
+		fullJobDetails.toggleClass('hidden');
+		jobLinkIsOpen ? btn.text('Hide Details') : btn.text('Click to view full details');
+	};
+
+
+	// jquery magnific popup
+	if (window.location.pathname === '/home' || window.location.pathname === '/home/') {
+		openImgModal();
+		const btn = $('#jobLinkBtn');
+		btn.on('click', handleJobLinkClick);
+		try {
+			$('.image-popup-vertical-fit').magnificPopup({
+				type: 'image',
+				delegate: 'a',
+				closeOnContentClick: true,
+				mainClass: 'mfp-img-mobile',
+				image: {
+					verticalFit: true
+				}
+
+			});
+
+			$('.image-popup-fit-width').magnificPopup({
+				type: 'image',
+				delegate: 'a',
+				closeOnContentClick: true,
+				image: {
+					verticalFit: false
+				}
+			});
+
+			$('.image-popup-no-margins').magnificPopup({
+				type: 'image',
+				delegate: 'a',
+				closeOnContentClick: true,
+				closeBtnInside: false,
+				fixedContentPos: true,
+				mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
+				image: {
+					verticalFit: true
+				},
+				zoom: {
+					enabled: true,
+					duration: 300 // don't foget to change the duration also in CSS
+				}
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 
 	// add active class to nav links
 
@@ -58,7 +125,7 @@ jQuery(document).ready(function ($) {
 						$('#message').val(null);
 						$('#name').val(null);
 						$('#email').val(null);
-						alert(result.data.message ? result.data.message : result.data.error || 'An error occured' );
+						alert(result.data.message ? result.data.message : result.data.error || 'An error occured');
 					}
 				});
 			});

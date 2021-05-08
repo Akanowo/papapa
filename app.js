@@ -2,8 +2,8 @@ const express = require('express');
 const path = require('path');
 const homeRouter = require('./routes/home.route');
 const servicesRouter = require('./routes/services.route');
-const promosRouter = require('./routes/promos.route');
 const contactRouter = require('./routes/contact.route');
+const aboutRouter = require('./routes/about.route');
 
 require('dotenv').config();
 
@@ -20,8 +20,8 @@ app.set('view engine', 'ejs');
 // routes
 app.use('/home', homeRouter());
 app.use('/services', servicesRouter());
-app.use('/promos', promosRouter());
 app.use('/contact', contactRouter());
+app.use('/about', aboutRouter());
 
 // Wildcard routes
 app.get('**', (req, res) => {
