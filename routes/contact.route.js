@@ -1,6 +1,7 @@
+// jshint esversion:9
 const axios = require('axios').default;
 const nodemailer = require('nodemailer');
-const router = require('express').Router()
+const router = require('express').Router();
 
 const routes = () => {
 
@@ -10,7 +11,7 @@ const routes = () => {
     }).post( async (req, res) => {
       if(!req.body.name || !req.body.email || !req.body.message || !req.body.token) {
         return res.status(400).json({
-          status: 'failed',
+          status: false,
           error: 'one or more fields missing, please refresh and try again'
         });
       }
@@ -19,21 +20,20 @@ const routes = () => {
 
       const captchaResponse = await axios.post('https://www.google.com/recaptcha/api/siteverify', {}, {
         params: {
-          secret: '6Le2XH8aAAAAAP6072jb0FtOw-6lSsxG7u0MMx_a',
+          secret: process.env.GOOGLE_RECAPTCHA_SECRET_KEY,
           response: req.body.token
         }
       });
-
-      // Log captcha response
 
       // Validate captcha response
       if(captchaResponse && captchaResponse.data.success === true) {
 
         const transport = nodemailer.createTransport({
-          service: 'gmail',
+          host: "smtp.mailtrap.io",
+          port: 2525,
           auth: {
-            user: process.env.RECIEPIENT_EMAIL,
-            pass: process.env.RECIEPIENT_PWD
+            user: process.env.MAILTRAP_USER,
+            pass: process.env.MAILTRAP_PASS
           }
         });
 
@@ -66,7 +66,7 @@ const routes = () => {
           if(error) {
             console.log(error);
             return res.status(422).json({
-              status: 'failed',
+              status: false,
               error: error.message
             });
           }
@@ -81,7 +81,7 @@ const routes = () => {
             }
 
             return res.status(200).json({
-              status: 'success',
+              status: true,
               message: 'Message sent successfully',
               response: replyInfo
             });
@@ -89,7 +89,7 @@ const routes = () => {
         });
       } else {
         return res.json({
-          status: 'failed',
+          status: false,
           message: 'Bots not allowed',
           data: req.body,
           'captcha-validation-response': captchaResponse.data

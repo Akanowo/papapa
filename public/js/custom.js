@@ -3,30 +3,38 @@ jQuery(document).ready(function ($) {
 	"use strict";
 	const device = new MobileDetect(window.navigator.userAgent);
 	let jobLinkIsOpen = false;
-	function openImgModal() {
-		if(device.os() === 'iOS' || device.os('AndroidOS')) {
-			const hireImg = document.getElementById('hire_img');
-			hireImg.onclick = (e) => {
-				console.log('hello');
-				$('#hireImgModal').modal('show');
-			};
-		}
-	}
+	// function openImgModal() {
+	// 	if(device.os() === 'iOS' || device.os('AndroidOS')) {
+	// 		const hireImg = document.getElementById('hire_img');
+	// 		hireImg.onclick = (e) => {
+	// 			console.log('hello');
+	// 			$('#hireImgModal').modal('show');
+	// 		};
+	// 	}
+	// }
 
-	const handleJobLinkClick = () => {
-		jobLinkIsOpen = !jobLinkIsOpen;
-		const fullJobDetails = $('#fullJobDetails');
-		const btn = $('#jobLinkBtn');
-		fullJobDetails.toggleClass('hidden');
-		jobLinkIsOpen ? btn.text('Hide Details') : btn.text('Click to view full details');
+	// const handleJobLinkClick = () => {
+	// 	jobLinkIsOpen = !jobLinkIsOpen;
+	// 	const fullJobDetails = $('#fullJobDetails');
+	// 	const btn = $('#jobLinkBtn');
+	// 	fullJobDetails.toggleClass('hidden');
+	// 	jobLinkIsOpen ? btn.text('Hide Details') : btn.text('Click to view full details');
+	// };
+
+	const handleRedirect = (e) => {
+		e.preventDefault();
+		window.location.href = '/contact';
 	};
+
+	// if (window.location.pathname === '/career' || window.location.pathname === '/career/') {
+	// 	openImgModal();
+	// 	const btn = $('#jobLinkBtn');
+	// 	btn.on('click', handleJobLinkClick);
+	// }
 
 
 	// jquery magnific popup
 	if (window.location.pathname === '/home' || window.location.pathname === '/home/') {
-		openImgModal();
-		const btn = $('#jobLinkBtn');
-		btn.on('click', handleJobLinkClick);
 		try {
 			$('.image-popup-vertical-fit').magnificPopup({
 				type: 'image',
@@ -63,6 +71,8 @@ jQuery(document).ready(function ($) {
 					duration: 300 // don't foget to change the duration also in CSS
 				}
 			});
+			
+			$('#contactUsBtn').on('click', handleRedirect);
 		} catch (error) {
 			console.log(error);
 		}
@@ -96,9 +106,9 @@ jQuery(document).ready(function ($) {
 		});
 
 		// Validate message input
-		$('#message').parsley({
-			pattern: /^[a-zA-Z ]+$/
-		});
+		// $('#message').parsley({
+		// 	pattern: /^[a-zA-Z ]+$/
+		// });
 
 		// Submit form
 		$('#contactForm').on('submit', async (e) => {
@@ -108,14 +118,20 @@ jQuery(document).ready(function ($) {
 			grecaptcha.ready(function () {
 				grecaptcha.execute('6Le2XH8aAAAAADPsjQLrGDK-ELL80aZpJ-NybgrS', { action: 'submit' }).then(async function (token) {
 					// Post data to backend
-					const result = await axios.post('/contact', {
-						name: $('#name').val().trim(),
-						email: $('#email').val().trim(),
-						message: $('#message').val().trim(),
-						token
-					});
+					let result;
+					try {
+						result = await axios.post('/contact', {
+							name: $('#name').val().trim(),
+							email: $('#email').val().trim(),
+							message: $('#message').val().trim(),
+							token
+						});
+					} catch (error) {
+						console.log(error.message);
+						result = error;
+					}
 
-					if (result.data.status === 'failed') {
+					if (result.data && !result.data.status) {
 						$('#submitBtn').attr('disabled', false);
 						$('#submitBtn').text('Send');
 						alert(result.data.error);
@@ -125,7 +141,11 @@ jQuery(document).ready(function ($) {
 						$('#message').val(null);
 						$('#name').val(null);
 						$('#email').val(null);
-						alert(result.data.message ? result.data.message : result.data.error || 'An error occured');
+						if(result.response) {
+							alert(result.response.data.error);
+							return;
+						}
+						alert(result.data && result.data.message ? result.data.message : 'An error occured');
 					}
 				});
 			});

@@ -9,6 +9,11 @@ body {
 	/* background: #EFEFEF; */
 }
 
+p {
+	font-size: 15px;
+  line-height: 25px;
+}
+
 /* img {
 	width: 100%;
 } */
@@ -23,6 +28,13 @@ a:active {
 
 .clear {
 	clear:both;
+}
+
+.flex {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: row;
 }
 
 h1,h2, h3, h4, h5, h6 {
@@ -1760,8 +1772,20 @@ header .nav .caret {
   min-height:calc(100% - (.5rem * 2));
 }
 
+#contactUsBtn {
+	height: 50px;
+	width: 200px;
+	font-size: larger;
+}
+
 /*  Media queries 
 ============================= */
+
+@media (max-width: 576px) {
+	.flex {
+		flex-direction: column;
+	}
+}
 
 @media (min-width: 576px) {
   .modal-dialog-centered {
@@ -1948,9 +1972,9 @@ padding-top: 3px;
 		margin-top:20px;
 	}
 
-	.hiring .col-md-6:last-child {
+	/* .hiring .col-md-6:last-child {
 		margin-top: 60px;
-	}
+	} */
 
 	.search{
 		float:left;
